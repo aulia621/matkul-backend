@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail Menu - {{ item['nama makanan'] }}</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .detail-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .detail-card {
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .badge-status {
+            font-size: 1rem;
+            padding: 8px 15px;
+        }
+        .bahan-item {
+            background: #f8f9fa;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid #dee2e6;
+        }
+        .price-tag {
+            font-size: 2rem;
+            color: #28a745;
+            font-weight: bold;
+        }
+        .section-title {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-4 mb-5">
+    <!-- Tombol Kembali -->
+    <div class="mb-3">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+            ← Kembali ke Daftar Menu
+        </a>
+    </div>
+
+    <!-- Header Detail -->
+    <div class="card detail-card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-5">
+                    <!-- Foto Produk -->
+                    {% if item.get('foto') %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ item['foto']) }}" 
+                             class="detail-image" 
+                             alt="{{ item['nama makanan'] }}">
+                    {% else %}
+                        <div class="text-center p-5 bg-light rounded">
+                            <h3 class="text-muted">Tidak ada foto</h3>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-7">
+                    <!-- Informasi Utama -->
+                    <h1 class="mb-3">{{ item['nama makanan'] }}</h1>
+                    
+                    <div class="mb-3">
+                        <span class="badge badge-primary badge-status">{{ item['kategori'] }}</span>
+                        {% if item.get('tersedia', True) %}
+                            <span class="badge badge-success badge-status">Tersedia</span>
+                        {% else %}
+                            <span class="badge badge-danger badge-status">Habis</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="price-tag mb-4">
+                        {{ item['harga'] }}
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <p class="info-label mb-1">Kode Produk:</p>
+                            <p class="h5">{{ item['kode'] }}</p>
+                        </div>
+                        <div class="col-6">
+                            <p class="info-label mb-1">Stok Tersedia:</p>
+                            <p class="h5">
+                                {{ item['jumlah'] }} porsi
+                                {% if item['jumlah'] < 10 %}
+                                    <span class="badge badge-warning ml-2">Stok Terbatas</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi -->
+                    <div class="mt-4">
+                        <a href="{{ url_for('edit', id=item['_id']) }}" class="btn btn-warning btn-lg">
+                            ✏️ Edit Menu
+                        </a>
+                        <a href="{{ url_for('delete', id=item['_id']) }}" 
+                           class="btn btn-danger btn-lg btn-delete"
+                           data-nama="{{ item['nama makanan'] }}">
+                            🗑️ Hapus Menu
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deskripsi -->
+    <div class="card detail-card mb-4">
+        <div class="card-body">
+            <h3 class="section-title">📝 Deskripsi</h3>
+            <p class="lead">
+                {% if item.get('deskripsi') %}
+                    {{ item['deskripsi'] }}
+                {% else %}
+                    Tidak ada deskripsi untuk produk ini.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <!-- Bahan-Bahan -->
+    {% if item.get('bahan') %}
+    <div class="card detail-card mb-4">
+        <div class="card-body">
+            <h3 class="section-title">🥘 Bahan-Bahan</h3>
+            <div>
+                {% for bahan in item['bahan'] %}
+                    <span class="bahan-item">{{ bahan }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Informasi Tambahan -->
+    <div class="card detail-card">
+        <div class="card-body">
+            <h3 class="section-title">ℹ️ Informasi Tambahan</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <table class="table table-sm">
+                        <tr>
+                            <td class="info-label">Kategori</td>
+                            <td>{{ item['kategori'] }}</td>
+                        </tr>
+                        <tr>
+                            <td class="info-label">Harga</td>
+                            <td>{{ item['harga'] }}</td>
+                        </tr>
+                        <tr>
+                            <td class="info-label">Jumlah Stok</td>
+                            <td>{{ item['jumlah'] }} porsi</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <table class="table table-sm">
+                        <tr>
+                            <td class="info-label">Kode Produk</td>
+                            <td>{{ item['kode'] }}</td>
+                        </tr>
+                        <tr>
+                            <td class="info-label">Status</td>
+                            <td>
+                                {% if item.get('tersedia', True) %}
+                                    <span class="text-success font-weight-bold">✓ Tersedia</span>
+                                {% else %}
+                                    <span class="text-danger font-weight-bold">✗ Tidak Tersedia</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="info-label">ID Database</td>
+                            <td><small>{{ item['_id'] }}</small></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const deleteBtn = document.querySelector(".btn-delete");
+    
+    if (deleteBtn) {
+        deleteBtn.addEventListener("click", function (e) {
+            const nama = this.getAttribute("data-nama");
+            if (!confirm("Apakah Anda yakin ingin menghapus menu '" + nama + "'?\n\nData yang dihapus tidak dapat dikembalikan!")) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html>

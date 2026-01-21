@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tambah Menu Baru</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-card {
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        .preview-image {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-top: 10px;
+            display: none;
+        }
+        .section-title {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .required {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-4 mb-5">
+    <!-- Tombol Kembali -->
+    <div class="mb-3">
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+            ← Kembali ke Daftar Menu
+        </a>
+    </div>
+
+    <!-- Header -->
+    <h1 class="text-center mb-4">➕ Tambah Menu Baru</h1>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Form Tambah Menu -->
+    <div class="card form-card">
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                
+                <!-- Informasi Dasar -->
+                <h3 class="section-title">📋 Informasi Dasar</h3>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="kode">Kode Produk <span class="required">*</span></label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="kode" 
+                                   name="kode" 
+                                   placeholder="Contoh: MKN001"
+                                   required>
+                            <small class="form-text text-muted">Format: MKN001, MNM001, SNK001, DST001</small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="kategori">Kategori <span class="required">*</span></label>
+                            <select class="form-control" id="kategori" name="kategori" required>
+                                <option value="">-- Pilih Kategori --</option>
+                                <option value="Makanan Utama">Makanan Utama</option>
+                                <option value="Minuman">Minuman</option>
+                                <option value="Snack">Snack</option>
+                                <option value="Dessert">Dessert</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="nama_makanan">Nama Makanan <span class="required">*</span></label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="nama_makanan" 
+                           name="nama_makanan" 
+                           placeholder="Contoh: Nasi Goreng Spesial"
+                           required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="harga">Harga <span class="required">*</span></label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="harga" 
+                                   name="harga" 
+                                   placeholder="Contoh: Rp 25.000"
+                                   required>
+                            <small class="form-text text-muted">Format: Rp 25.000</small>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="jumlah">Jumlah Stok <span class="required">*</span></label>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="jumlah" 
+                                   name="jumlah" 
+                                   placeholder="Contoh: 50"
+                                   min="0"
+                                   value="0"
+                                   required>
+                            <small class="form-text text-muted">Masukkan jumlah stok tersedia</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deskripsi -->
+                <h3 class="section-title mt-4">📝 Deskripsi</h3>
+                
+                <div class="form-group">
+                    <label for="deskripsi">Deskripsi Menu</label>
+                    <textarea class="form-control" 
+                              id="deskripsi" 
+                              name="deskripsi" 
+                              rows="4"
+                              placeholder="Deskripsikan menu makanan ini dengan lengkap...&#10;&#10;Contoh: Nasi goreng dengan telur, ayam, dan sayuran segar. Dilengkapi dengan kerupuk dan acar."></textarea>
+                    <small class="form-text text-muted">Jelaskan menu secara detail agar menarik pembeli</small>
+                </div>
+
+                <!-- Bahan-Bahan -->
+                <h3 class="section-title mt-4">🥘 Bahan-Bahan</h3>
+                
+                <div class="form-group">
+                    <label for="bahan">Bahan-Bahan</label>
+                    <textarea class="form-control" 
+                              id="bahan" 
+                              name="bahan" 
+                              rows="3"
+                              placeholder="Masukkan bahan-bahan dan pisahkan dengan koma&#10;&#10;Contoh: Nasi, Telur, Ayam, Bawang merah, Bawang putih, Kecap manis, Sayuran"></textarea>
+                    <small class="form-text text-muted">Pisahkan setiap bahan dengan koma (,)</small>
+                </div>
+
+                <!-- Foto -->
+                <h3 class="section-title mt-4">📷 Foto Produk</h3>
+                
+                <div class="form-group">
+                    <label for="foto">Upload Foto Menu</label>
+                    <input type="file" 
+                           class="form-control-file" 
+                           id="foto" 
+                           name="foto"
+                           accept="image/*"
+                           onchange="previewImage(event)">
+                    <small class="form-text text-muted">
+                        Format yang diperbolehkan: JPG, PNG, GIF (Maksimal 5MB)
+                    </small>
+                </div>
+
+                <!-- Preview Foto -->
+                <div class="form-group">
+                    <img id="preview" class="preview-image" alt="Preview foto">
+                </div>
+
+                <!-- Status Ketersediaan -->
+                <h3 class="section-title mt-4">✓ Status Ketersediaan</h3>
+                
+                <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" 
+                               class="custom-control-input" 
+                               id="tersedia" 
+                               name="tersedia"
+                               value="true"
+                               checked>
+                        <label class="custom-control-label" for="tersedia">
+                            <strong>Menu Tersedia</strong> (Centang jika menu ini tersedia untuk dijual)
+                        </label>
+                    </div>
+                    <small class="form-text text-muted">
+                        Hapus centang jika menu sedang tidak tersedia atau habis
+                    </small>
+                </div>
+
+                <!-- Info Box -->
+                <div class="alert alert-info mt-4" role="alert">
+                    <strong>💡 Tips:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>Gunakan foto dengan resolusi yang baik dan pencahayaan yang cukup</li>
+                        <li>Deskripsikan menu secara detail dan menarik</li>
+                        <li>Pastikan harga sudah benar sebelum disimpan</li>
+                        <li>Field yang bertanda <span class="required">*</span> wajib diisi</li>
+                    </ul>
+                </div>
+
+                <!-- Tombol Submit -->
+                <hr class="mt-4 mb-4">
+                <div class="text-right">
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg">
+                        ✖ Batal
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        💾 Simpan Menu
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Preview image sebelum upload
+function previewImage(event) {
+    const preview = document.getElementById('preview');
+    const file = event.target.files[0];
+    
+    if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        }
+        
+        reader.readAsDataURL(file);
+    } else {
+        preview.style.display = 'none';
+    }
+}
+
+// Validasi form sebelum submit
+document.querySelector('form').addEventListener('submit', function(e) {
+    const kode = document.getElementById('kode').value.trim();
+    const nama = document.getElementById('nama_makanan').value.trim();
+    const kategori = document.getElementById('kategori').value;
+    const harga = document.getElementById('harga').value.trim();
+    const jumlah = document.getElementById('jumlah').value;
+    
+    if (!kode || !nama || !kategori || !harga || jumlah < 0) {
+        e.preventDefault();
+        alert('Mohon lengkapi semua field yang wajib diisi (*)');
+        return false;
+    }
+    
+    return true;
+});
+
+// Auto format harga dengan Rp
+document.getElementById('harga').addEventListener('blur', function(e) {
+    let value = e.target.value.trim();
+    
+    // Jika belum ada "Rp" di depan, tambahkan
+    if (value && !value.toLowerCase().startsWith('rp')) {
+        // Hapus semua karakter non-digit
+        let numbers = value.replace(/\D/g, '');
+        
+        if (numbers) {
+            // Format dengan titik sebagai pemisah ribuan
+            numbers = parseInt(numbers).toLocaleString('id-ID');
+            e.target.value = 'Rp ' + numbers;
+        }
+    }
+});
+</script>
+
+</body>
+</html>

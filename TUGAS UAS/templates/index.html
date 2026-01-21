@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Menu Makanan</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Kulinerku</h1>
+
+    <!-- SEARCH + TAMBAH MENU (SEJAJAR) -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- SEARCH -->
+        <form method="get" action="{{ url_for('index') }}" class="form-inline">
+            <input
+                type="text"
+                name="search"
+                class="form-control mr-2"
+                placeholder="Cari kode / nama / kategori"
+                value="{{ search }}"
+            >
+            <button class="btn btn-primary" type="submit">Cari</button>
+        </form>
+
+        <!-- TAMBAH MENU -->
+        <a href="{{ url_for('add') }}" class="btn btn-primary">
+            Tambah Menu
+        </a>
+    </div>
+
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Kode</th>
+                <th>Nama Makanan</th>
+                <th>Kategori</th>
+                <th>Harga</th>
+                <th>Jumlah</th>
+                <th>Foto</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                <td>{{ item['kode'] }}</td>
+                <td>{{ item['nama makanan'] }}</td>
+                <td>{{ item['kategori'] }}</td>
+                <td>{{ item['harga'] }}</td>
+                <td>{{ item['jumlah'] }}</td>
+
+                <td>
+                    {% if item.get('foto') %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ item['foto']) }}"
+                        width="80">
+                    {% else %}
+                        Tidak ada foto
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a href="{{ url_for('detail', id=item._id) }}" class="btn btn-info btn-sm">
+                    Detail
+                    </a>
+
+                    <a href="{{ url_for('edit', id=item['_id']) }}"
+                       class="btn btn-warning btn-sm">
+                        Update
+                    </a>
+
+                    <a href="{{ url_for('delete', id=item['_id']) }}"
+                       class="btn btn-danger btn-sm btn-delete"
+                       data-nama="{{ item['nama makanan'] }}">
+                        Hapus
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7" class="text-center">Data tidak ditemukan</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- PAGINATION -->
+    {% if total_pages > 1 %}
+    <nav>
+        <ul class="pagination justify-content-center">
+            {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page - 1 }}&search={{ search }}">Previous</a>
+                </li>
+            {% endif %}
+
+            {% for p in range(1, total_pages + 1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link" href="?page={{ p }}&search={{ search }}">{{ p }}</a>
+                </li>
+            {% endfor %}
+
+            {% if page < total_pages %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page + 1 }}&search={{ search }}">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".btn-delete");
+
+    buttons.forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+            const nama = this.getAttribute("data-nama");
+            if (!confirm("Apakah Anda yakin ingin menghapus menu " + nama + "?")) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>
